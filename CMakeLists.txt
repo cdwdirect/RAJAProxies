@@ -4,6 +4,7 @@ project(RajaProxies LANGUAGES CXX)
 
 option(ENABLE_LULESH_ONE "Build LULESH v1.0" On)
 option(ENABLE_LULESH_TWO "Build LULESH v2.0" On)
+option(ENABLE_LULESH_APOLLO "Build LULESH v2.0 w/Apollo" On)
 option(ENABLE_KRIPKE "Build Kripke" On)
 
 set (ENABLE_EXAMPLES Off CACHE Bool "Don't build examples")
@@ -11,6 +12,16 @@ set (ENABLE_EXAMPLES Off CACHE Bool "Don't build examples")
 if (PROXIES_ENABLE_WARNINGS)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 endif()
+
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+find_package(APOLLO REQUIRED)
+if(APOLLO_FOUND)
+    message(STATUS "---- APOLLO:  Found!")
+    message(STATUS "---- APOLLO:    APOLLO_INCLUDE_DIRS = ${APOLLO_INCLUDE_DIRS}")
+    message(STATUS "---- APOLLO:    APOLLO_LIB_DIRS     = ${APOLLO_LIB_DIRS}")
+    message(STATUS "---- APOLLO:    APOLLO_LIBRARY      = ${APOLLO_LIBRARY}")
+endif(APOLLO_FOUND)
+
 
 ################################
 # BLT
@@ -40,6 +51,11 @@ endif ()
 if (ENABLE_LULESH_TWO)
   message(STATUS "Building LULESH v2.0")
   add_subdirectory(lulesh-v2.0)
+endif ()
+
+if (ENABLE_LULESH_APOLLO)
+  message(STATUS "Building LULESH v2.0 w/Apollo Support")
+  add_subdirectory(apollo-lulesh)
 endif ()
 
 if (ENABLE_KRIPKE)
