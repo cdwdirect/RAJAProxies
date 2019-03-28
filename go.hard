@@ -1,0 +1,10 @@
+#!/bin/bash
+rm -rf ./build
+mkdir build
+cd build
+cmake \
+    -DAPOLLO_DIR=/g/g17/wood67/src/apollo/install \
+    -DENABLE_APOLLO=ON \
+    -DENABLE_OPENMP=ON \
+    ..
+make -j && cd .. && tree ./build/bin

@@ -5,6 +5,10 @@
 //
 //   Tiling modes for different exeuction cases (see luleshPolicy.hxx).
 //
+
+
+
+
 enum TilingMode
 {
    Canonical,       // canonical element ordering -- single range segment
@@ -22,9 +26,10 @@ enum TilingMode
 #define LULESH_CANONICAL        2 /*  OMP forall applied to each for loop */
 #define LULESH_CUDA_CANONICAL   9 /*  CUDA launch applied to each loop */
 #define LULESH_STREAM_EXPERIMENTAL 11 /* Work in progress... */
+#define LULESH_APOLLO           128 /* online ml-driven policy selection */
 
 #ifndef USE_CASE
-#define USE_CASE   LULESH_CANONICAL
+#define USE_CASE   LULESH_APOLLO
 #endif
 
 
@@ -86,6 +91,52 @@ typedef RAJA::ExecPolicy<Segment_Iter, Segment_Exec> symnode_exec_policy;
 typedef RAJA::cuda_reduce<thread_block_size> reduce_policy;
 
 // ----------------------------------------------------
+#elif USE_CASE == LULESH_APOLLO
+
+TilingMode const lulesh_tiling_mode = Canonical;
+
+typedef RAJA::seq_segit         Segment_Iter;
+typedef RAJA::apollo_exec       Segment_Exec;
+
+typedef RAJA::ExecPolicy<Segment_Iter, Segment_Exec> node_exec_policy;
+typedef RAJA::ExecPolicy<Segment_Iter, Segment_Exec> elem_exec_policy;
+typedef RAJA::ExecPolicy<Segment_Iter, Segment_Exec> mat_exec_policy;
+typedef RAJA::ExecPolicy<Segment_Iter, Segment_Exec> symnode_exec_policy;
+
+
+//typedef RAJA::ExecPolicy<Segment_Iter, RAJA::apollo_exec> exec_policy;
+
+//typedef exec_policy node_exec_policy;
+//typedef exec_policy elem_exec_policy;
+//typedef exec_policy mat_exec_policy;
+//typedef exec_policy symnode_exec_policy;
+
+typedef RAJA::omp_reduce reduce_policy;
+
+/*
+// David P's code:
+//
+//struct apollo{};
+//
+//template<typename IndexSet, typename Kernel>
+//void apollo_helper(apollo& oracle, IndexSet iset, Kernel kernel){
+//    // do Apollo things with oracle
+//    // call forall with magically derived policy, passing iset and kernel
+//}
+//
+//#define apollo_forall(...) [&](){\
+//  static apollo instance;\
+//  apollo_helper(instance,__VA_ARGS__);\
+//  }();
+//
+//struct iset{};
+//
+//void dbg(){
+//    apollo_forall(iset(),[=](){});
+//}
+//
+*/
+
 #else
 
 #error "You must define a use case in luleshPolicy.cxx"

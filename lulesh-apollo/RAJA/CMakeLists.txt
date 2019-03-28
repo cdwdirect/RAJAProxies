@@ -21,6 +21,8 @@ set (lulesh_depends
   RAJA
   apollo)
 
+set (RAJA_ENABLE_APOLLO On)
+
 if (ENABLE_OPENMP)
   set (lulesh_depends
     ${lulesh_depends}
@@ -51,31 +53,13 @@ target_compile_definitions(
 target_compile_definitions(
   lulesh-apollo
   PRIVATE
-  -DUSE_CASE=1)
+  -DUSE_CASE=128)
 
 target_compile_definitions(
   lulesh-apollo
   PUBLIC
   -DLULESH_DEVICE= 
 )
-
-if (ENABLE_OPENMP)
-  blt_add_executable(
-    NAME lulesh-omp-apollo
-    SOURCES ${lulesh_sources}
-    DEPENDS_ON ${lulesh_depends})
-
-  target_compile_definitions(
-    lulesh-omp-apollo
-    PRIVATE 
-    -DUSE_MPI=0)
-
-  target_compile_definitions(
-    lulesh-omp-apollo
-    PUBLIC
-    -DLULESH_DEVICE= 
-  )
-endif ()
 
 if (ENABLE_CUDA)
   configure_file(
@@ -96,7 +80,7 @@ if (ENABLE_CUDA)
     ${CMAKE_CURRENT_BINARY_DIR}/lulesh-viz-cuda.cpp COPYONLY)
 
   blt_add_executable(
-    NAME lulesh-cuda-apollo
+    NAME lulesh-apollo-cuda
     SOURCES 
     ${CMAKE_CURRENT_BINARY_DIR}/lulesh-cuda.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/lulesh-comm-cuda.cpp
@@ -106,23 +90,23 @@ if (ENABLE_CUDA)
     DEPENDS_ON ${lulesh_depends})
 
   target_compile_definitions(
-    lulesh-cuda-apollo
+    lulesh-apollo-cuda
     PRIVATE
     -DUSE_CASE=9)
 
   target_compile_definitions(
-    lulesh-cuda-apollo
+    lulesh-apollo-cuda
     PRIVATE 
     -DUSE_MPI=0)
 
   target_compile_definitions(
-    lulesh-cuda-apollo
+    lulesh-apollo-cuda
     PUBLIC
     -DLULESH_DEVICE=__device__
   )
 
   target_include_directories(
-    lulesh-cuda-apollo
+    lulesh-apollo-cuda
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR})
 endif ()

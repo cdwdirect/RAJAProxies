@@ -1,27 +1,24 @@
 cmake_minimum_required(VERSION 3.4)
 
 project(RajaProxies LANGUAGES CXX)
+set (CMAKE_CXX_FLAGS "-std=c++1y ${CMAKE_CXX_FLAGS}")
 
-option(ENABLE_LULESH_ONE "Build LULESH v1.0" On)
+option(ENABLE_LULESH_ONE "Build LULESH v1.0" Off)
 option(ENABLE_LULESH_TWO "Build LULESH v2.0" On)
 option(ENABLE_LULESH_APOLLO "Build LULESH v2.0 w/Apollo" On)
-option(ENABLE_KRIPKE "Build Kripke" On)
+option(ENABLE_KRIPKE "Build Kripke" Off)
+
+if(ENABLE_LULESH_APOLLO)
+  set(ENABLE_APOLLO On)
+endif(ENABLE_LULESH_APOLLO)
 
 set (ENABLE_EXAMPLES Off CACHE Bool "Don't build examples")
 
 if (PROXIES_ENABLE_WARNINGS)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror ")
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
-find_package(APOLLO REQUIRED)
-if(APOLLO_FOUND)
-    message(STATUS "---- APOLLO:  Found!")
-    message(STATUS "---- APOLLO:    APOLLO_INCLUDE_DIRS = ${APOLLO_INCLUDE_DIRS}")
-    message(STATUS "---- APOLLO:    APOLLO_LIB_DIRS     = ${APOLLO_LIB_DIRS}")
-    message(STATUS "---- APOLLO:    APOLLO_LIBRARY      = ${APOLLO_LIBRARY}")
-endif(APOLLO_FOUND)
-
 
 ################################
 # BLT
@@ -54,8 +51,15 @@ if (ENABLE_LULESH_TWO)
 endif ()
 
 if (ENABLE_LULESH_APOLLO)
-  message(STATUS "Building LULESH v2.0 w/Apollo Support")
-  add_subdirectory(apollo-lulesh)
+  message(STATUS "Building LULESH v2.0 w/APOLLO Support")
+  find_package(APOLLO REQUIRED)
+  if(APOLLO_FOUND)
+      message(STATUS "---- APOLLO:    APOLLO_INCLUDE_DIRS = ${APOLLO_INCLUDE_DIRS}")
+      message(STATUS "---- APOLLO:    APOLLO_LIB_DIRS     = ${APOLLO_LIB_DIRS}")
+      message(STATUS "---- APOLLO:    APOLLO_LIBRARY      = ${APOLLO_LIBRARY}")
+  endif(APOLLO_FOUND)
+  #
+  add_subdirectory(lulesh-apollo)
 endif ()
 
 if (ENABLE_KRIPKE)

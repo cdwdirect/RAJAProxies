@@ -154,9 +154,10 @@ Additional BSD Notice
 #include <unistd.h>
 
 #include "lulesh.hpp"
-#include "RAJA/util/Timer.hpp"
 
+#include "RAJA/util/Timer.hpp"
 #include "RAJA/util/macros.hpp"
+
 
 #define RAJA_STORAGE static inline
 //#define RAJA_STORAGE 
