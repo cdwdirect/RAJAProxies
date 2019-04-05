@@ -4,7 +4,8 @@ mkdir build
 cd build
 cmake \
     -DAPOLLO_DIR=/g/g17/wood67/src/apollo/install \
+    -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_APOLLO=ON \
     -DENABLE_OPENMP=ON \
     ..
-make -j && cd .. && tree ./build/bin
+make -j && cd .. && tree -D ./build/bin
