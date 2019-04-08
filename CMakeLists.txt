@@ -50,14 +50,32 @@ if (ENABLE_LULESH_TWO)
   add_subdirectory(lulesh-v2.0)
 endif ()
 
+
 if (ENABLE_LULESH_APOLLO)
   message(STATUS "Building LULESH v2.0 w/APOLLO Support")
   find_package(APOLLO REQUIRED)
   if(APOLLO_FOUND)
+    blt_register_library(
+      NAME apollo
+      INCLUDES ${APOLLO_INCLUDE_DIRS}
+      LIBRARIES ${APOLLO_LIBRARY})
       message(STATUS "---- APOLLO:    APOLLO_INCLUDE_DIRS = ${APOLLO_INCLUDE_DIRS}")
       message(STATUS "---- APOLLO:    APOLLO_LIB_DIRS     = ${APOLLO_LIB_DIRS}")
       message(STATUS "---- APOLLO:    APOLLO_LIBRARY      = ${APOLLO_LIBRARY}")
   endif(APOLLO_FOUND)
+  find_package(Caliper REQUIRED)
+  if(CALIPER_FOUND)
+      blt_register_library(
+      NAME Caliper
+      INCLUDES ${CALIPER_INCLUDE_DIRS}
+      LIBRARIES ${CALIPER_LIBRARY})
+    message(STATUS "---- CALIPER:  Found!")
+    message(STATUS "---- CALIPER:    CALIPER_INCLUDE_DIRS = ${CALIPER_INCLUDE_DIRS}")
+    message(STATUS "---- CALIPER:    CALIPER_LIB_DIRS     = ${CALIPER_LIB_DIRS}")
+    message(STATUS "---- CALIPER:    CALIPER_LIBRARY      = ${CALIPER_LIBRARY}")
+  else()
+    message(STATUS "---- CALIPER:  ** ERROR ** Could not locate Caliper installation.")
+  endif(CALIPER_FOUND)
   #
   add_subdirectory(lulesh-apollo)
 endif ()

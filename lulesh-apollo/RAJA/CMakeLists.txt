@@ -19,7 +19,9 @@ set (lulesh_sources
 
 set (lulesh_depends
   RAJA
-  apollo)
+  apollo
+  Caliper)
+
 
 set (RAJA_ENABLE_APOLLO On)
 

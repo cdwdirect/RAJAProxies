@@ -158,6 +158,10 @@ Additional BSD Notice
 #include "RAJA/util/Timer.hpp"
 #include "RAJA/util/macros.hpp"
 
+#include "caliper/cali.h"
+#include "caliper/Annotation.h"
+
+#include "apollo/Apollo.h"
 
 #define RAJA_STORAGE static inline
 //#define RAJA_STORAGE 
@@ -2586,8 +2590,9 @@ int main(int argc, char *argv[])
 //    RAJA::forall<mat_exec_policy>(locDom->getRegionISet(i), [=] (int idx) { printf("%d ", idx) ; }) ;
 //    printf("\n\n") ;
 // }
-   while((locDom->time() < locDom->stoptime()) && (locDom->cycle() < opts.its)) {
 
+    int prev_cycle = -1;
+    while((locDom->time() < locDom->stoptime()) && (locDom->cycle() < opts.its)) {
       TimeIncrement(*locDom) ;
       LagrangeLeapFrog(locDom) ;
 
@@ -2595,8 +2600,11 @@ int main(int argc, char *argv[])
          printf("cycle = %d, time = %e, dt=%e\n",
                 locDom->cycle(), double(locDom->time()), double(locDom->deltatime()) ) ;
       }
+
+      Apollo::instance()->flushAllRegionMeasurements(locDom->cycle());
    }
-double elapsed_time;
+   
+   double elapsed_time;
 #ifdef RAJA_USE_CALIPER
    // Use reduced max elapsed time
    timer_main.stop("timer_main");
