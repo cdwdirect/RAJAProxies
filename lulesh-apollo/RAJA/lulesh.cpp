@@ -2591,8 +2591,23 @@ int main(int argc, char *argv[])
 //    printf("\n\n") ;
 // }
 
+    //==
+    //== APOLLO: Set up a pointer to the singleton instance of the runtime:
+    //==
+    ApplyAccelerationBoundaryConditionsForNodesllo *apollo = Apollo::instance();
+    //==
+
     int prev_cycle = -1;
     while((locDom->time() < locDom->stoptime()) && (locDom->cycle() < opts.its)) {
+
+      //==
+      //== APOLLO: Example of setting application-specific features:
+      //==
+      //apollo->setFeature("size_x", (double) locDom->sizeX());
+      //apollo->setFeature("size_y", (double) locDom->sizeY());
+      //apollo->setFeature("size_z", (double) locDom->sizeZ());
+      //==
+
       TimeIncrement(*locDom) ;
       LagrangeLeapFrog(locDom) ;
 
@@ -2601,7 +2616,11 @@ int main(int argc, char *argv[])
                 locDom->cycle(), double(locDom->time()), double(locDom->deltatime()) ) ;
       }
 
-      Apollo::instance()->flushAllRegionMeasurements(locDom->cycle());
+      //==
+      //== APOLLO: Send measurements on to the SOS service through Caliper:
+      //==
+      apollo->flushAllRegionMeasurements(locDom->cycle());
+      //==
    }
    
    double elapsed_time;
