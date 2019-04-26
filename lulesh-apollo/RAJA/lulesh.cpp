@@ -162,6 +162,13 @@ Additional BSD Notice
 #include "caliper/Annotation.h"
 
 #include "apollo/Apollo.h"
+#define APOLLO_TIME(__APOLLO_dbl_var)                           \
+    {                                                           \
+        struct timeval t;                                       \
+        gettimeofday(&t, NULL);                                 \
+        __APOLLO_dbl_var = (double)(t.tv_sec + (t.tv_usec/1e6));\
+    }
+
 
 #define RAJA_STORAGE static inline
 //#define RAJA_STORAGE 
@@ -2594,7 +2601,10 @@ int main(int argc, char *argv[])
     //==
     //== APOLLO: Set up a pointer to the singleton instance of the runtime:
     //==
-    ApplyAccelerationBoundaryConditionsForNodesllo *apollo = Apollo::instance();
+    Apollo *apollo = Apollo::instance();
+    double flush_before = 0.0;
+    double flush_after  = 0.0;
+    double flush_total  = 0.0;
     //==
 
     int prev_cycle = -1;
@@ -2619,9 +2629,13 @@ int main(int argc, char *argv[])
       //==
       //== APOLLO: Send measurements on to the SOS service through Caliper:
       //==
+      APOLLO_TIME(flush_before);
       apollo->flushAllRegionMeasurements(locDom->cycle());
+      APOLLO_TIME(flush_after);
+      flush_total += (flush_after - flush_before);
       //==
    }
+   printf("== APOLLO: rank(%3d) flush_total == %3.8f\n", myRank, flush_total);
    
    double elapsed_time;
 #ifdef RAJA_USE_CALIPER
@@ -2653,6 +2667,7 @@ int main(int argc, char *argv[])
    if ((myRank == 0) && (opts.quiet == 0)) {
       VerifyAndWriteFinalOutput(elapsed_timeG, *locDom, opts.nx, numRanks);
    }
+
 
    delete locDom;
 

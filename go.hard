@@ -6,6 +6,7 @@ cmake \
     -DCALIPER_DIR=/g/g17/wood67/src/caliper/install \
     -DAPOLLO_DIR=/g/g17/wood67/src/apollo/install \
     -DCMAKE_BUILD_TYPE=Release \
+    -DENABLE_MPI=ON \
     -DENABLE_APOLLO=ON \
     -DENABLE_OPENMP=ON \
     ..
