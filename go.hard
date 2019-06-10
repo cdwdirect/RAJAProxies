@@ -2,11 +2,19 @@
 rm -rf ./build
 mkdir build
 cd build
-cmake \
+
+#
+#  If MPI ever comes back into vogue:
+#
+#    -DENABLE_MPI=ON \
+#    -DCMAKE_C_COMPILER=$(which mpicc) \
+#    -DCMAKE_CXX_COMPILER=$(which mpicxx) \
+
+cmake -Wno-dev -Wunused-parameter \
     -DCALIPER_DIR=/g/g17/wood67/src/caliper/install \
     -DAPOLLO_DIR=/g/g17/wood67/src/apollo/install \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DENABLE_MPI=ON \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DENABLE_TESTS=FALSE \
     -DENABLE_APOLLO=ON \
     -DENABLE_OPENMP=ON \
     ..

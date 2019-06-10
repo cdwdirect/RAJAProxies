@@ -11,8 +11,6 @@
 ###############################################################################
 
 
-add_definitions("-DENABLE_APOLLO=Yes")
-add_definitions("-DRAJA_ENABLE_APOLLO=Yes")
 
 add_subdirectory(baseline)
 add_subdirectory(RAJA)
